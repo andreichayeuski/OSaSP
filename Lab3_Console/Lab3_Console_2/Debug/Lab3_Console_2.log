@@ -1,0 +1,4 @@
+﻿  Lab3_Console_2.cpp
+d:\документы\университет\5 семестр\осисп\отчёты\lab3_console\lab3_console_2\lab3_console_2.cpp(25): warning C4838: преобразование из "int" в "SHORT" требует сужающего преобразования
+d:\документы\университет\5 семестр\осисп\отчёты\lab3_console\lab3_console_2\lab3_console_2.cpp(14): warning C4101: cCharsWritten: неиспользованная локальная переменная
+  Lab3_Console_2.vcxproj -> D:\Документы\Университет\5 семестр\ОСиСП\Отчёты\Lab3_Console\Debug\Lab3_Console_2.exe

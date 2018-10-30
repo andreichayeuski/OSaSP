@@ -1,0 +1,22 @@
+Option Explicit
+Dim FSO, Batch, path, WshShell, WshShell2
+Set FSO = CreateObject("Scripting.FileSystemObject")
+Set Batch = FSO.OpenTextFile("D:\Документы\Университет\5 семестр\ОСиСП\Отчёты\lab3\colorandmusic.bat", 2, True)
+Batch.WriteLine ":loop"
+Batch.WriteLine "@echo off"
+Batch.WriteLine "cls"
+Batch.WriteLine "color 12"
+Batch.WriteLine "timeout /t 3"
+Batch.WriteLine "color 31"
+Batch.WriteLine "timeout /t 3"
+Batch.WriteLine "color 21"
+Batch.WriteLine "timeout /t 3"
+Batch.WriteLine "color 87"
+Batch.WriteLine "timeout /t 3"
+Batch.WriteLine "goto loop"
+Batch.Close
+Set WshShell = CreateObject("WScript.Shell")
+WshShell.Run "C:\Users\andre\Downloads\prokofiev.mp3"
+Set WshShell2 = CreateObject("WScript.Shell")
+WshShell2.Run "colorandmusic.bat", 1, True
+
