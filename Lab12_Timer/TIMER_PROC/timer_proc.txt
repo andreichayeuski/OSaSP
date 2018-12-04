@@ -1,0 +1,448 @@
+TIMER_PROC.cpp
+
+#include "stdafx.h"
+#include "TIMER_PROC.h"
+#include <windows.h>
+#define MAX_LOADSTRING 100
+
+// Global Variables:
+HINSTANCE hInst;								// current instance
+TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
+TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+
+// Forward declarations of functions included in this code module:
+ATOM				MyRegisterClass(HINSTANCE hInstance);
+BOOL				InitInstance(HINSTANCE, int);
+LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
+int APIENTRY _tWinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPTSTR    lpCmdLine,
+	int       nCmdShow)
+{
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
+
+	// TODO: Place code here.
+	MSG msg;
+	HACCEL hAccelTable;
+
+	// Initialize global strings
+	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_TIMER_PROC, szWindowClass, MAX_LOADSTRING);
+	MyRegisterClass(hInstance);
+
+	// Perform application initialization:
+	if (!InitInstance(hInstance, nCmdShow))
+	{
+		return FALSE;
+	}
+
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TIMER_PROC));
+
+	// Main message loop:
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
+	return (int)msg.wParam;
+}
+
+
+
+//
+//  FUNCTION: MyRegisterClass()
+//
+//  PURPOSE: Registers the window class.
+//
+//  COMMENTS:
+//
+//    This function and its usage are only necessary if you want this code
+//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
+//    function that was added to Windows 95. It is important to call this function
+//    so that the application will get 'well formed' small icons associated
+//    with it.
+//
+ATOM MyRegisterClass(HINSTANCE hInstance)
+{
+	WNDCLASSEX wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEX);
+
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TIMER_PROC));
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_TIMER_PROC);
+	wcex.lpszClassName = szWindowClass;
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+	return RegisterClassEx(&wcex);
+}
+
+//
+//   FUNCTION: InitInstance(HINSTANCE, int)
+//
+//   PURPOSE: Saves instance handle and creates main window
+//
+//   COMMENTS:
+//
+//        In this function, we save the instance handle in a global variable and
+//        create and display the main program window.
+//
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+{
+	HWND hWnd;
+
+	hInst = hInstance; // Store instance handle in our global variable
+
+	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+
+	if (!hWnd)
+	{
+		return FALSE;
+	}
+
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
+
+	return TRUE;
+}
+
+//
+//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
+//
+//  PURPOSE:  Processes messages for the main window.
+//
+//  WM_COMMAND	- process the application menu
+//  WM_PAINT	- Paint the main window
+//  WM_DESTROY	- post a quit message and return
+//
+
+int i1 = 1;
+int i2 = 300;
+int i3 = 10;
+//int timet = 10;
+CONST RECT *pa;
+RECT a;
+TCHAR s1[10];
+COLORREF C1 = RGB(0, 140, 140);
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	int wmId, wmEvent;
+	PAINTSTRUCT ps; 
+	HDC hdc;
+	bool v = 0;
+
+
+	switch (message)
+	{
+
+	case WM_CREATE:
+
+		SetTimer(hWnd,             // handle to main window 
+			IDT_TIMER1,            // timer identifier 
+		100,                 // 0.1-second interval 
+			(TIMERPROC)NULL);     // no timer callback 
+
+		SetTimer(hWnd,             // handle to main window 
+			IDT_TIMER2,            // timer identifier 
+			20,                 // 0.2-second interval 
+			(TIMERPROC)NULL);     // no timer callback 
+
+		SetTimer(hWnd,             // handle to main window 
+			IDT_TIMER3,            // timer identifier 
+			1000,                 // 1-second interval 
+			(TIMERPROC)NULL);     // no timer callback 
+		break;
+
+
+	case WM_TIMER:
+		hdc = GetDC(hWnd);
+		if (wParam == IDT_TIMER1)
+			i1++;
+		 if (wParam == IDT_TIMER2)
+			i2--;
+		 if (wParam == IDT_TIMER3){
+			 if (i3 > 0)
+			 {
+				 i3--;
+			 }
+			 else if (i3==0)
+			 {
+				 KillTimer(hWnd, IDT_TIMER3);
+				 int i3 = -1;
+
+			 } 
+			 
+		 }
+		 if (wParam == IDT_TIMER1 || wParam == IDT_TIMER2 || wParam == IDT_TIMER3 || i3==-1){
+			 SetTextColor(hdc, C1);
+			 SetBkMode(hdc, TRANSPARENT);
+			 InvalidateRect(0, 0, 0);
+			 TextOut(hdc, i1 * 5, 10, TEXT("¬право"), 8);
+			 TextOut(hdc, i2*3, 10, TEXT("¬лево"), 12);
+			 if (i3 != -1){
+				 _itow_s(i3, s1, 10);
+				 TextOut(hdc, 220, 100, s1, 3);
+			 }
+
+
+			 ReleaseDC(hWnd, hdc);
+		 }
+		break;
+
+	case WM_COMMAND:
+		wmId = LOWORD(wParam);
+		wmEvent = HIWORD(wParam);
+		// Parse the menu selections:
+		switch (wmId)
+		{
+		case IDM_ABOUT:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			break;
+		case IDM_EXIT:
+			DestroyWindow(hWnd);
+			break;
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+		break;
+	case WM_PAINT:
+
+		hdc = BeginPaint(hWnd, &ps);
+
+
+		EndPaint(hWnd, &ps);
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+	return 0;
+}
+
+// Message handler for about box.
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+|||||||||||||||||||||
+
+resource.h
+
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by TIMER_PROC.rc
+//
+
+#define IDS_APP_TITLE			103
+
+#define IDR_MAINFRAME			128
+#define IDD_TIMER_PROC_DIALOG	102
+#define IDD_ABOUTBOX			103
+#define IDM_ABOUT				104
+#define IDM_EXIT				105
+#define IDI_TIMER_PROC			107
+#define IDI_SMALL				108
+#define IDC_TIMER_PROC			109
+#define IDC_MYICON				2
+#ifndef IDC_STATIC
+#define IDC_STATIC				-1
+#define IDT_TIMER1			    122
+#define IDT_TIMER2			    123
+#define IDT_TIMER3			    201
+#endif
+// Следующие стандартные значения для новых объектов
+//
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+
+#define _APS_NO_MFC					130
+#define _APS_NEXT_RESOURCE_VALUE	129
+#define _APS_NEXT_COMMAND_VALUE		32771
+#define _APS_NEXT_CONTROL_VALUE		1000
+#define _APS_NEXT_SYMED_VALUE		110
+#endif
+#endif
+
+|||||||||||||||||||||
+TIMER_PROC.rc
+ 
+
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Создано из ресурса TEXTINCLUDE 2.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE 25, 1
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Значок
+//
+
+// Значок с наименьшим значением идентификатора помещается первым, чтобы гарантировать использование
+// идентичного значка приложения для всех систем.
+
+IDI_TIMER_PROC       ICON         "TIMER_PROC.ico"
+IDI_SMALL               ICON         "small.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Меню
+//
+
+IDC_TIMER_PROC MENU
+BEGIN
+    POPUP "&Файл"
+    BEGIN
+        MENUITEM "В&ыход",                IDM_EXIT
+    END
+    POPUP "&Справка"
+    BEGIN
+        MENUITEM "&О программе ...",           IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Сочетание клавиш
+//
+
+IDC_TIMER_PROC ACCELERATORS
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Диалоговое окно
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "О проекте TIMER_PROC"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "TIMER_PROC, версия 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2017",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "ОК",IDOK,113,41,50,14,WS_GROUP
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Таблица строк
+//
+
+STRINGTABLE
+BEGIN
+   IDC_TIMER_PROC   "TIMER_PROC"
+   IDS_APP_TITLE       "TIMER_PROC"
+END
+
+#endif
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Создано из ресурса TEXTINCLUDE 3.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // не APSTUDIO_INVOKED
